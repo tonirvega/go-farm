@@ -88,7 +88,7 @@ func configureTable() *tview.Table {
 
 	addHeaderCells(table)
 
-	table.SetBorderPadding(1, 2, 15, 1).
+	table.SetBorderPadding(1, 2, 2, 1).
 		SetBorder(true)
 
 	return table
@@ -116,7 +116,7 @@ func updateRow(table *tview.Table) {
 	table.SetCell(jornada, 0, &tview.TableCell{Text: fmt.Sprintf("%d", jornada)})
 	table.SetCell(jornada, 1, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadGallinas)})
 	table.SetCell(jornada, 2, &tview.TableCell{Text: fmt.Sprintf("%d", huevosPorSegundo)})
-	table.SetCell(jornada, 2, &tview.TableCell{Text: fmt.Sprintf("%d", totalHuevoJornada)})
-	table.SetCell(jornada, 3, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadTrabajadores)})
-	table.SetCell(jornada, 4, &tview.TableCell{Text: fmt.Sprintf("%d", totalPaquetesJornada)})
+	table.SetCell(jornada, 3, &tview.TableCell{Text: fmt.Sprintf("%d", totalHuevoJornada)})
+	table.SetCell(jornada, 4, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadTrabajadores)})
+	table.SetCell(jornada, 5, &tview.TableCell{Text: fmt.Sprintf("%d", totalPaquetesJornada)})
 }
