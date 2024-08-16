@@ -16,7 +16,6 @@ var (
 	jornadaFinalizadaTrabajadores = make(chan bool)
 	jornadaFinalizadaGallinas     = make(chan bool)
 	canalHuevos                   = make(chan Huevo, 1000)
-	canalPaquetes                 = make(chan Paquete, 1000)
 	table                         = tview.NewTable()
 )
 
