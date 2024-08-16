@@ -46,26 +46,4 @@ func comenzarJornada() {
 	go producirHuevos(canalHuevos)
 
 	go empaquetarHuevos(canalHuevos, canalPaquetes)
-
-	// // Iniciar la goroutine de conteo
-	// go func() {
-	// 	for range canalPaquetes { // Escuchar cuando se realiza un paquete
-
-	// 		select {
-	// 		case <-jornadaFinalizadaTrabajadores:
-	// 			debug(fmt.Sprintf("Fin de la jornada %d", jornada))
-	// 			return
-	// 		case <-jornadaFinalizadaGallinas:
-	// 			debug(fmt.Sprintf("Fin de la jornada %d", jornada))
-	// 		default:
-
-	// 		}
-
-	// 		totalPaquetesJornada++
-
-	// 		updateRow(table)
-
-	// 		debug(fmt.Sprintf("Se han realizado %d paquetes hasta ahora en la jornada %d.", totalPaquetesJornada, jornada))
-	// 	}
-	// }()
 }
