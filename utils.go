@@ -19,3 +19,7 @@ func debugModeActive() bool {
 
 	return debugModeActive
 }
+
+func modoDesktopActivo() bool {
+	return os.Getenv("DESKTOP") == "ENABLED"
+}

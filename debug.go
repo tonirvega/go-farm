@@ -7,6 +7,12 @@ import (
 
 func debug(message string) {
 
+	debugImpl(message)
+
+}
+
+func desktopDebug(message string) {
+
 	if debugTextView != nil {
 
 		debugText = fmt.Sprintf("\n > %s%s", message, debugText)
@@ -17,6 +23,10 @@ func debug(message string) {
 		}
 	}
 
+}
+
+func terminalDebug(message string) {
+	fmt.Println(message)
 }
 
 func updateDebug() {
