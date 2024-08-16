@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -34,10 +33,6 @@ func form() *tview.Form {
 				return
 			}
 
-			jornadaFinalizada = false
-
-			jornadaFinalizadaTrabajadores = make(chan bool)
-
 			comenzarJornada()
 		}).
 		AddButton("Finalizar jornada", func() {
@@ -46,40 +41,22 @@ func form() *tview.Form {
 				debug("La jornada ya ha finalizado o no ha comenzado.")
 				return
 			}
-			// Se avisa a los trabajadores y gallinas que la jornada ha finalizado
 
-			// Las gallinas se van a dormir o a hacer lo que sea que hagan las gallinas
-			for i := 0; i < cantidadGallinas; i++ {
-				jornadaFinalizadaGallinas <- true
-			}
-
-			// Los trabajadores se van a su casa
-			for i := 0; i < cantidadTrabajadores; i++ {
-				jornadaFinalizadaTrabajadores <- true
-			}
-
-			// Se resetean las variables de la jornada
-			totalPaquetesJornada = 0
-
-			totalHuevoJornada = 0
-
-			jornadaFinalizada = true
-
-			debug("Jornada en curso finalizada. Puedes iniciar una nueva jornada.")
+			terminarJornada()
 
 		}).
-		AddButton("Exit", func() {
+		AddButton("Salir", func() {
 
 			app.Stop()
 
 		})
 
-	form.SetBorder(true).SetTitle("TONIS FARM").SetTitleAlign(tview.AlignLeft)
+	form.SetBorder(true).SetTitle("GO FARM").SetTitleAlign(tview.AlignLeft)
 
 	return form
 }
 
-func mainViewComponent() *tview.Flex {
+func buildMainViewComponent() *tview.Flex {
 
 	flex := tview.NewFlex().
 		SetDirection(tview.FlexRow).
@@ -104,43 +81,6 @@ func mainViewComponent() *tview.Flex {
 	return flex
 }
 
-func handleIntEvent(number *int, text string) {
-
-	parsedInt, err := strconv.Atoi(text)
-
-	if err != nil {
-		*number = 0
-	}
-
-	*number = parsedInt
-
-}
-
-func debug(message string) {
-
-	if debugTextView != nil {
-
-		debugText = fmt.Sprintf("\n > %s%s", message, debugText)
-
-		// keep only the last 10 messages
-		if len(debugText) > 1000 {
-			debugText = debugText[:1000]
-		}
-	}
-
-}
-
-func updateDebug() {
-	for {
-		time.Sleep(500 * time.Millisecond)
-		if debugTextView != nil {
-			app.QueueUpdateDraw(func() {
-				debugTextView.SetText(debugText)
-			})
-		}
-	}
-}
-
 func configureTable() *tview.Table {
 	table.
 		SetBorders(true).
@@ -159,7 +99,8 @@ func addHeaderCells(table *tview.Table) {
 	headers := []string{
 		"⏲️ JORNADA",
 		"🐔 Nº GALLINAS",
-		"🥚🥚 HUEVOS PRODUCIDOS",
+		"% HUEVOS POR SEGUNDO",
+		"🥚 HUEVOS PRODUCIDOS 🥚",
 		"🧑🏻‍🤝‍🧑🏼 Nº TRABAJADORES",
 		"📦 PAQUETES EMPAQUETADOS",
 	}
@@ -174,6 +115,7 @@ func updateRow(table *tview.Table) {
 
 	table.SetCell(jornada, 0, &tview.TableCell{Text: fmt.Sprintf("%d", jornada)})
 	table.SetCell(jornada, 1, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadGallinas)})
+	table.SetCell(jornada, 2, &tview.TableCell{Text: fmt.Sprintf("%d", huevosPorSegundo)})
 	table.SetCell(jornada, 2, &tview.TableCell{Text: fmt.Sprintf("%d", totalHuevoJornada)})
 	table.SetCell(jornada, 3, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadTrabajadores)})
 	table.SetCell(jornada, 4, &tview.TableCell{Text: fmt.Sprintf("%d", totalPaquetesJornada)})

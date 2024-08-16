@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func trabajador(id int, eggs <-chan Huevo, packages chan<- Paquete) {
+func trabajador(id int, eggs <-chan Huevo) {
 	for {
 		select {
 
@@ -37,11 +37,11 @@ func trabajador(id int, eggs <-chan Huevo, packages chan<- Paquete) {
 	}
 }
 
-func empaquetarHuevos(eggs chan Huevo, packages chan<- Paquete) {
+func empaquetarHuevos(eggs chan Huevo) {
 
 	for i := 0; i < cantidadTrabajadores; i++ {
 
-		go trabajador(i, eggs, packages)
+		go trabajador(i, eggs)
 
 	}
 }
