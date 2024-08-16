@@ -32,7 +32,9 @@ func trabajador(id int, eggs <-chan Huevo) {
 
 			totalPaquetesJornada++
 
-			updateRow(table)
+			if modoDesktopActivo() {
+				updateRow(table)
+			}
 		}
 	}
 }

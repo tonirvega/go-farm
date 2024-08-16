@@ -4,7 +4,28 @@ import (
 	"github.com/rivo/tview"
 )
 
+var debugImpl func(string) = terminalDebug
+
 func main() {
+
+	if modoDesktopActivo() {
+
+		// wasm no es compatible con tview
+		mostrarPanel()
+
+	} else {
+
+		comenzarJornada()
+
+		<-jornadaFinalizadaTrabajadores
+
+	}
+
+}
+
+func mostrarPanel() {
+
+	debugImpl = desktopDebug
 
 	mainView := tview.NewFlex().
 		AddItem(form(), 0, 1, true).
@@ -17,5 +38,4 @@ func main() {
 		panic(err)
 
 	}
-
 }
