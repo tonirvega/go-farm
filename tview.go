@@ -63,8 +63,6 @@ func form() *tview.Form {
 
 			totalHuevoJornada = 0
 
-			canalPaquetes = make(chan Paquete, 1000)
-
 			jornadaFinalizada = true
 
 			debug("Jornada en curso finalizada. Puedes iniciar una nueva jornada.")
