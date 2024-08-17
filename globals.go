@@ -2,17 +2,18 @@ package main
 
 import "github.com/rivo/tview"
 
+// Glboal variables
 var (
-	cantidadGallinas              = 2
-	cantidadTrabajadores          = 1
-	huevosPorSegundo              = 1
-	totalHuevoJornada             = 0
-	jornadaFinalizada             = true
-	totalPaquetesJornada          = 0
-	jornada                       = 0
-	app                           = tview.NewApplication()
-	jornadaFinalizadaTrabajadores = make(chan bool)
-	jornadaFinalizadaGallinas     = make(chan bool)
-	canalHuevos                   = make(chan Huevo, 1000)
-	table                         = tview.NewTable()
+	chickensAmount               = 2
+	employeesAmount              = 1
+	eggsPerSecond                = 1
+	eggsCountPerWorkingDay       = 0
+	packagesCountPerWorkingDay   = 0
+	workingDay                   = 0
+	workingDayIsOver             = true
+	employeeWorkingDayEndChannel = make(chan bool)
+	chickenWorkingDayEndChannel  = make(chan bool)
+	eggsChannel                  = make(chan Egg, 1000)
+	app                          = tview.NewApplication()
+	table                        = tview.NewTable()
 )

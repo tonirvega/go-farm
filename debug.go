@@ -29,11 +29,25 @@ func terminalDebug(message string) {
 	fmt.Println(message)
 }
 
-func updateDebug() {
+func refreshView() {
+
+	initialLang := lang
+
 	for {
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
+
 		if debugTextView != nil {
 			app.QueueUpdateDraw(func() {
+
+				if initialLang != lang {
+					loadLang()
+					initialLang = lang
+				}
+
+				timeNow = time.Now()
+
+				calculateWorkingDayDuration()
+
 				debugTextView.SetText(debugText)
 			})
 		}

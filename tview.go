@@ -14,42 +14,93 @@ var debugTextView *tview.TextView = nil
 
 func form() *tview.Form {
 	form := tview.NewForm().
+		AddDropDown(
+			"LANG",
+			[]string{"en", "es"}, 0, func(option string, index int) {
+
+				lang = option
+
+				loadLang()
+			},
+		).
 		AddTextView(
-			"DESCRIPCIÓN",
-			"🐔 Este programa simula un sistema de producción y consumo en una granja. Los productores son gallinas que ponen huevos uno por uno. Una vez que un lote de 6 huevos está listo, los consumidores (trabajadores) los recogen y empaquetan. La interfaz muestra en tiempo real la cantidad de huevos producidos, empaquetados y el estado de las gallinas y los trabajadores. ¡Observa cómo la granja opera con precisión y eficiencia!", 50, 14, true, true).
-		AddInputField("🐔 nº GALLINAS", strconv.Itoa(cantidadGallinas), 20, nil, func(text string) {
-			handleIntEvent(&cantidadGallinas, text)
-		}).
-		AddInputField("🥚 HUEVOS / SEGUNDO", strconv.Itoa(huevosPorSegundo), 20, nil, func(text string) {
-			handleIntEvent(&huevosPorSegundo, text)
-		}).
-		AddInputField("👨‍🌾 nº TRABAJADORES", strconv.Itoa(cantidadTrabajadores), 20, nil, func(text string) {
-			handleIntEvent(&cantidadTrabajadores, text)
-		}).
-		AddButton("Comenzar jornada", func() {
+			messages.DescriptionTitle,
+			messages.Description,
+			50,
+			14,
+			true,
+			true).
+		AddInputField(
+			messages.NumChickensHeader,
+			strconv.Itoa(chickensAmount),
+			20,
+			nil,
+			// Event handler
+			func(text string) {
 
-			if !jornadaFinalizada {
-				debug("La jornada ya ha comenzado.")
-				return
-			}
+				handleIntEvent(&chickensAmount, text)
 
-			comenzarJornada()
-		}).
-		AddButton("Finalizar jornada", func() {
+			},
+		).
+		AddInputField(
+			messages.EggsPerSecondHeader,
+			strconv.Itoa(eggsPerSecond),
+			20,
+			nil,
+			// Event handler
+			func(text string) {
 
-			if jornadaFinalizada {
-				debug("La jornada ya ha finalizado o no ha comenzado.")
-				return
-			}
+				handleIntEvent(&eggsPerSecond, text)
 
-			terminarJornada()
+			},
+		).
+		AddInputField(
+			messages.NumWorkersHeader,
+			strconv.Itoa(employeesAmount),
+			20,
+			nil,
+			// Event handler
+			func(text string) {
 
-		}).
-		AddButton("Salir", func() {
+				handleIntEvent(&employeesAmount, text)
 
-			app.Stop()
+			},
+		).
+		AddButton(
+			messages.StartWorkingDay,
+			// Event handler
+			func() {
 
-		})
+				if !workingDayIsOver {
+					debug(messages.WorkingDayAlreadyStarted)
+					return
+				}
+
+				startWorkingDay()
+			},
+		).
+		AddButton(
+			messages.FinishWorkingDay,
+			// Event handler
+			func() {
+
+				if workingDayIsOver {
+					debug(messages.WorkingDayAlreadyFinished)
+					return
+				}
+
+				finishWorkingDay()
+
+			},
+		).
+		AddButton(
+			messages.Exit,
+			func() {
+
+				app.Stop()
+
+			},
+		)
 
 	form.SetBorder(true).SetTitle("GO FARM").SetTitleAlign(tview.AlignLeft)
 
@@ -73,7 +124,7 @@ func buildMainViewComponent() *tview.Flex {
 
 		debugTextView.
 			SetBorder(true).
-			SetTitle("< DEBUG />").
+			SetTitle(messages.Debug).
 			SetBorderColor(tcell.ColorYellow)
 
 	}
@@ -88,7 +139,7 @@ func configureTable() *tview.Table {
 
 	addHeaderCells(table)
 
-	table.SetBorderPadding(1, 2, 2, 1).
+	table.SetBorderPadding(1, 2, 5, 1).
 		SetBorder(true)
 
 	return table
@@ -97,12 +148,12 @@ func configureTable() *tview.Table {
 func addHeaderCells(table *tview.Table) {
 
 	headers := []string{
-		"⏲️ JORNADA",
-		"🐔 Nº GALLINAS",
-		"% HUEVOS POR SEGUNDO",
-		"🥚 HUEVOS PRODUCIDOS 🥚",
-		"🧑🏻‍🤝‍🧑🏼 Nº TRABAJADORES",
-		"📦 PAQUETES EMPAQUETADOS",
+		messages.WorkingDay,
+		messages.NumChickensHeader,
+		messages.EggsPerSecondHeader,
+		messages.EggsProduced,
+		messages.NumWorkersHeader,
+		messages.PackagesPacked,
 	}
 
 	for i := 0; i < len(headers); i++ {
@@ -113,10 +164,16 @@ func addHeaderCells(table *tview.Table) {
 
 func updateRow(table *tview.Table) {
 
-	table.SetCell(jornada, 0, &tview.TableCell{Text: fmt.Sprintf("%d", jornada)})
-	table.SetCell(jornada, 1, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadGallinas)})
-	table.SetCell(jornada, 2, &tview.TableCell{Text: fmt.Sprintf("%d", huevosPorSegundo)})
-	table.SetCell(jornada, 3, &tview.TableCell{Text: fmt.Sprintf("%d", totalHuevoJornada)})
-	table.SetCell(jornada, 4, &tview.TableCell{Text: fmt.Sprintf("%d", cantidadTrabajadores)})
-	table.SetCell(jornada, 5, &tview.TableCell{Text: fmt.Sprintf("%d", totalPaquetesJornada)})
+	table.SetCell(workingDay, 0, &tview.TableCell{Text: calculateWorkingDayDuration()})
+	table.SetCell(workingDay, 1, &tview.TableCell{Text: fmt.Sprintf("%d", chickensAmount)})
+	table.SetCell(workingDay, 2, &tview.TableCell{Text: fmt.Sprintf("%d", eggsPerSecond)})
+	table.SetCell(workingDay, 3, &tview.TableCell{Text: fmt.Sprintf("%d", eggsCountPerWorkingDay)})
+	table.SetCell(workingDay, 4, &tview.TableCell{Text: fmt.Sprintf("%d", employeesAmount)})
+	table.SetCell(workingDay, 5, &tview.TableCell{Text: fmt.Sprintf("%d", packagesCountPerWorkingDay)})
+}
+
+func calculateWorkingDayDuration() string {
+
+	return timeNow.Sub(timeStart).String()
+
 }

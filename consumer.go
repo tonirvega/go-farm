@@ -5,13 +5,13 @@ import (
 	"time"
 )
 
-func trabajador(id int, eggs <-chan Huevo) {
+func employee(id int, eggs <-chan Egg) {
 	for {
 		select {
 
 		// Se comprueba si la jornada ha finalizado
-		case <-jornadaFinalizadaTrabajadores:
-			debug(fmt.Sprintf("Fin go routine worker %d", id))
+		case <-employeeWorkingDayEndChannel:
+			debug(fmt.Sprintf(messages.EmployeeEndGoroutine, id))
 			return
 		default:
 			for i := 0; i < 6; i++ {
@@ -19,8 +19,8 @@ func trabajador(id int, eggs <-chan Huevo) {
 				// Se vuelve a comprobar si la jornada ha finalizado incluso cuando el trabajador está empaquetando huevos,
 				// digamos que el trabajador está en medio de empaquetar un huevo y la jornada finaliza, el trabajador es un poco
 				// radical y deja de empaquetar huevos y se va a su casa.
-				case <-jornadaFinalizadaTrabajadores:
-					debug(fmt.Sprintf("Fin go routine trabajador %d", id))
+				case <-employeeWorkingDayEndChannel:
+					debug(fmt.Sprintf(messages.EmployeeEndGoroutine, id))
 					return
 				case <-eggs: // Consumir un huevo del canal
 				}
@@ -28,22 +28,22 @@ func trabajador(id int, eggs <-chan Huevo) {
 
 			time.Sleep(1 * time.Second) // Esperar un segundo
 
-			debug(fmt.Sprintf("Trabajador %d empaquetó 6 huevos.", id))
+			debug(fmt.Sprintf(messages.EmployeePackedEggs, id))
 
-			totalPaquetesJornada++
+			packagesCountPerWorkingDay++
 
-			if modoDesktopActivo() {
+			if appMode == Terminal {
 				updateRow(table)
 			}
 		}
 	}
 }
 
-func empaquetarHuevos(eggs chan Huevo) {
+func packEggs(eggs chan Egg) {
 
-	for i := 0; i < cantidadTrabajadores; i++ {
+	for i := 0; i < employeesAmount; i++ {
 
-		go trabajador(i, eggs)
+		go employee(i, eggs)
 
 	}
 }

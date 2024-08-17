@@ -1,35 +1,42 @@
 package main
 
-import "strconv"
+import (
+	"strconv"
+	"time"
+)
 
-func comenzarJornada() {
+var timeStart time.Time = time.Now()
+var timeNow time.Time = time.Now()
 
-	jornadaFinalizada = false
-	jornada++
+func startWorkingDay() {
 
-	jornadaFinalizadaTrabajadores = make(chan bool)
-	jornadaFinalizadaGallinas = make(chan bool)
-	canalHuevos = make(chan Huevo, 1000)
+	timeStart = time.Now()
+	workingDayIsOver = false
+	workingDay++
 
-	go producirHuevos(canalHuevos)
-	go empaquetarHuevos(canalHuevos)
+	employeeWorkingDayEndChannel = make(chan bool)
+	chickenWorkingDayEndChannel = make(chan bool)
+	eggsChannel = make(chan Egg, 1000)
+
+	go produceEggs(eggsChannel)
+	go packEggs(eggsChannel)
 }
 
-func terminarJornada() {
+func finishWorkingDay() {
 
-	for i := 0; i < cantidadGallinas; i++ {
-		jornadaFinalizadaGallinas <- true
+	for i := 0; i < chickensAmount; i++ {
+		chickenWorkingDayEndChannel <- true
 	}
 
-	for i := 0; i < cantidadTrabajadores; i++ {
-		jornadaFinalizadaTrabajadores <- true
+	for i := 0; i < employeesAmount; i++ {
+		employeeWorkingDayEndChannel <- true
 	}
 
-	totalPaquetesJornada = 0
-	totalHuevoJornada = 0
-	jornadaFinalizada = true
-
-	debug("Jornada en curso finalizada. Puedes iniciar una nueva jornada.")
+	packagesCountPerWorkingDay = 0
+	eggsCountPerWorkingDay = 0
+	workingDayIsOver = true
+	timeNow = time.Now()
+	debug(messages.WorkingDayIsOver)
 }
 
 func handleIntEvent(number *int, text string) {

@@ -45,8 +45,8 @@ func (m *DaggerWasm) ModoEscritorio(
 	flagDebug string,
 
 	// +optional
-	// +default="ENABLED"
-	flagDesktop string,
+	// +default="TERMINAL"
+	flagAppMode string,
 
 ) *dagger.Container {
 	return dag.Container().
@@ -54,7 +54,7 @@ func (m *DaggerWasm) ModoEscritorio(
 		WithWorkdir("/app").
 		WithMountedDirectory("/app", projectDir).
 		WithEnvVariable("DEBUG_MODE", flagDebug).
-		WithEnvVariable("DESKTOP", flagDesktop).
+		WithEnvVariable("APP_MODE", flagAppMode).
 		WithExec([]string{"go", "build"}).
 		Terminal(
 			dagger.ContainerTerminalOpts{

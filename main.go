@@ -4,38 +4,44 @@ import (
 	"github.com/rivo/tview"
 )
 
-var debugImpl func(string) = terminalDebug
-
 func main() {
 
-	if modoDesktopActivo() {
+	setAppConfigs()
 
-		// wasm no es compatible con tview
-		mostrarPanel()
+	switch appMode {
 
-	} else {
+	case Wasm:
+		startWasmMode()
 
-		comenzarJornada()
-
-		<-jornadaFinalizadaTrabajadores
-
+	case Terminal:
+		startTerminalMode()
 	}
 
 }
 
-func mostrarPanel() {
+func startTerminalMode() {
 
 	debugImpl = desktopDebug
 
 	mainView := tview.NewFlex().
-		AddItem(form(), 0, 1, true).
+		AddItem(form(), 80, 1, true).
 		AddItem(buildMainViewComponent(), 0, 2, false)
 
-	go updateDebug()
+	go refreshView()
 
 	if err := app.SetRoot(mainView, true).SetFocus(mainView).Run(); err != nil {
 
 		panic(err)
 
 	}
+}
+
+func startWasmMode() {
+
+	debugImpl = terminalDebug
+
+	startWorkingDay()
+
+	<-employeeWorkingDayEndChannel
+
 }
