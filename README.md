@@ -9,6 +9,9 @@ Este es un proyecto con objetivos didácticos, se estudian los siguientes puntos
 6. Compilación del proyecto en wasm y lanzamiento en navegador
 
 ## modo terminal
+
+Ejecutar en la ruta principal de nuestro proyecto: 
+
 ```shell
 dagger -m dagger-wasm/ call desktop-mode --project-dir="."
 ```
@@ -18,6 +21,8 @@ dagger -m dagger-wasm/ call desktop-mode --project-dir="."
 
 Wasm tiene ciertas limitaciones, por tanto se ha realizado una implementación específica para ver como corre 
 en la consola del navegador.
+
+Ejecutar en la ruta principal de nuestro proyecto: 
 
 ```shell
 dagger -m ./dagger-wasm call wasm-mode --project-dir="." as-service up --ports=8080:80
