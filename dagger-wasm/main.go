@@ -21,7 +21,7 @@ import (
 
 type DaggerWasm struct{}
 
-func (m *DaggerWasm) ModoWasm(
+func (m *DaggerWasm) WasmMode(
 	ctx context.Context,
 	projectDir *dagger.Directory,
 ) *dagger.Container {
@@ -32,10 +32,10 @@ func (m *DaggerWasm) ModoWasm(
 		ServeWasm(ctx,
 			containerGolang.
 				Directory("/app").
-				File("json.wasm"))
+				File("main.wasm"))
 }
 
-func (m *DaggerWasm) ModoEscritorio(
+func (m *DaggerWasm) DesktopMode(
 	ctx context.Context,
 
 	projectDir *dagger.Directory,
@@ -75,7 +75,7 @@ func (m *DaggerWasm) ServeWasm(ctx context.Context, wasmBinary *dagger.File) *da
 
 	return dag.Container().
 		From("nginx").
-		WithMountedFile("/usr/share/nginx/html/json.wasm", wasmBinary).
+		WithMountedFile("/usr/share/nginx/html/main.wasm", wasmBinary).
 		WithMountedFile("/usr/share/nginx/html/wasm_exec.js", jsExecFile).
 		WithMountedFile("/usr/share/nginx/html/index.html", indexHtml).
 		WithExposedPort(80)
@@ -89,5 +89,5 @@ func (m *DaggerWasm) CompileWasm(ctx context.Context, projectDir *dagger.Directo
 		WithMountedDirectory("/app", projectDir).
 		WithEnvVariable("GOOS", "js").
 		WithEnvVariable("GOARCH", "wasm").
-		WithExec([]string{"go", "build", "-o", "json.wasm"})
+		WithExec([]string{"go", "build", "-o", "main.wasm"})
 }

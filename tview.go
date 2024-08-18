@@ -20,7 +20,7 @@ func form() *tview.Form {
 
 				lang = option
 
-				loadLang()
+				loadLangFromJsonFile()
 			},
 		).
 		AddTextView(

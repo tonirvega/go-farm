@@ -14,13 +14,11 @@ var (
 	appMode                = Terminal
 	debugMode              = true
 	debugImpl func(string) = nil
-	messages  *Messages    = nil
+	messages  Messages     = Messages{}
 	lang      string       = "en"
 )
 
 func setAppConfigs() {
-
-	loadLang()
 
 	mode, err := getAppMode()
 
@@ -32,12 +30,27 @@ func setAppConfigs() {
 
 	appMode = toRunMode[mode]
 
+	switch appMode {
+
+	case Wasm:
+
+		debugImpl = terminalDebug
+
+		loadLangFromMemory()
+
+	case Terminal:
+
+		debugImpl = desktopDebug
+
+		loadLangFromJsonFile()
+
+	}
+
 	debugMode = debugModeActive()
 
 }
 
-func loadLang() {
-
+func loadLangFromJsonFile() {
 	langStruct, err := readLangFile()
 
 	if err != nil {
@@ -45,7 +58,38 @@ func loadLang() {
 
 	}
 
-	messages = langStruct
+	messages = *langStruct
+}
+
+func loadLangFromMemory() {
+
+	messages = Messages{
+		AppModeIsNotSet:           "APP_MODE is not set, please set it to 'WASM' or 'TERMINAL'",
+		AppModeIsInvalid:          "APP_MODE %s is invalid, please set it to 'WASM' or 'TERMINAL'",
+		HenLaidAnEgg:              "The hen %d laid an egg",
+		HenEndGoroutine:           "End goroutine for hen %d",
+		EmployeeEndGoroutine:      "End goroutine for employee %d",
+		EmployeePackedEggs:        "Employee %d packed 6 eggs",
+		WorkingDayIsOver:          "Working day is over. You can start a new day now",
+		Description:               "🐔 This program simulates a production and consumption system on a farm. The producers are hens that lay eggs one by one. Once a batch of 6 eggs is ready, the consumers (workers) collect and pack them. The interface shows in real-time the number of eggs produced, packed, and the status of the hens and workers. Watch how the farm operates with precision and efficiency!",
+		DescriptionTitle:          "DESCRIPTION",
+		NumChickens:               "🐔 Hens",
+		EggsPerSecond:             "🥚 Eggs / sec",
+		NumWorkers:                "👨‍🌾 Employees",
+		StartWorkingDay:           "Start Working Day",
+		WorkingDayAlreadyStarted:  "The working day has already started.",
+		FinishWorkingDay:          "Finish Working Day",
+		WorkingDayAlreadyFinished: "The working day has already finished or has not started.",
+		Exit:                      "Exit",
+		GoFarm:                    "Go Farm",
+		Debug:                     "< Debug mode />",
+		WorkingDay:                "⏲️ Working Day",
+		NumChickensHeader:         "🐔 Hens amount",
+		EggsPerSecondHeader:       "🥚 Eggs / sec",
+		EggsProduced:              "🥚 Produced eggs",
+		NumWorkersHeader:          "🧑🏻‍🤝‍🧑🏼 Workers",
+		PackagesPacked:            "📦 Packages Packed",
+	}
 }
 
 func debugModeActive() bool {
@@ -78,7 +122,7 @@ func getAppMode() (string, error) {
 		return envMode, nil
 	}
 
-	return "", fmt.Errorf(messages.AppModeIsInvalid, envMode)
+	return "", fmt.Errorf("Error, %s is not a valid app mode", envMode)
 }
 
 func readLangFile() (*Messages, error) {

@@ -40,7 +40,7 @@ func refreshView() {
 			app.QueueUpdateDraw(func() {
 
 				if initialLang != lang {
-					loadLang()
+					loadLangFromJsonFile()
 					initialLang = lang
 				}
 
