@@ -2,11 +2,12 @@
 Este es un proyecto con objetivos didácticos, se estudian los siguientes puntos:
 
 1. Goroutines
-2. Paso por valor
-3. Paso por referencia
-4. Librería Tview (k9s) para mostrar datos.
-5. Compilación del proyecto y lanzado del mismo con dagger.io
-6. Compilación del proyecto en wasm y lanzamiento en navegador
+2. Structs
+3. Paso por valor
+4. Paso por referencia
+5. Librería Tview (k9s) para mostrar datos.
+6. Compilación del proyecto y lanzado del mismo con dagger.io
+7. Compilación del proyecto en wasm y lanzamiento en navegador
 
 ## modo terminal
 
