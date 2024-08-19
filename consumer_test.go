@@ -8,22 +8,24 @@ import (
 
 func TestEmployeeConsumer(t *testing.T) {
 	// Reinitialize the global variables
-	eggsChannel := make(chan Egg)
+	newEggsChannel := make(chan Egg)
 	employeeWorkingDayEndChannel := make(chan bool)
-
+	employeesAmount = 1
 	eggsCountPerWorkingDay = 0
 	packagesCountPerWorkingDay = 0
 
 	debugImpl = terminalDebug
-	go packEggs(eggsChannel)
+	go packEggs(newEggsChannel)
 
 	for i := 0; i < 7; i++ {
 
-		eggsChannel <- Egg{}
+		fmt.Printf("Egg %d\n", i)
+		newEggsChannel <- Egg{}
 		eggsCountPerWorkingDay++
 	}
 
 	time.Sleep(10 * time.Second)
+	fmt.Printf("Employee working day end\n")
 	employeeWorkingDayEndChannel <- true
 
 	if packagesCountPerWorkingDay != 1 {
