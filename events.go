@@ -24,13 +24,15 @@ func startWorkingDay() {
 
 func finishWorkingDay() {
 
-	for i := 0; i < chickensAmount; i++ {
+	for i := 0; i < hensAmount; i++ {
 		chickenWorkingDayEndChannel <- true
 	}
 
 	for i := 0; i < employeesAmount; i++ {
 		employeeWorkingDayEndChannel <- true
 	}
+
+	close(eggsChannel)
 
 	packagesCountPerWorkingDay = 0
 	eggsCountPerWorkingDay = 0

@@ -28,7 +28,7 @@ func hen(id int, eggsPerSecond int, eggs chan<- Egg) {
 
 func produceEggs(eggs chan Egg) {
 
-	for i := 0; i < chickensAmount; i++ {
+	for i := 0; i < hensAmount; i++ {
 
 		go hen(i, eggsPerSecond, eggs) // Cada gallina produce n huevos por segundo
 

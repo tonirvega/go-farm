@@ -14,6 +14,7 @@ func employee(id int, eggs <-chan Egg) {
 			debug(fmt.Sprintf(messages.EmployeeEndGoroutine, id))
 			return
 		default:
+
 			for i := 0; i < 6; i++ {
 				select {
 				// Se vuelve a comprobar si la jornada ha finalizado incluso cuando el trabajador está empaquetando huevos,
@@ -23,10 +24,9 @@ func employee(id int, eggs <-chan Egg) {
 					debug(fmt.Sprintf(messages.EmployeeEndGoroutine, id))
 					return
 				case <-eggs: // Consumir un huevo del canal
+					time.Sleep(166 * time.Millisecond) // El trabajador tarda 1 segundo en empaquetar 6 huevos
 				}
 			}
-
-			time.Sleep(1 * time.Second) // Esperar un segundo
 
 			debug(fmt.Sprintf(messages.EmployeePackedEggs, id))
 

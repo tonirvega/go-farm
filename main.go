@@ -21,8 +21,6 @@ func main() {
 
 func startTerminalMode() {
 
-	debugImpl = desktopDebug
-
 	mainView := tview.NewFlex().
 		AddItem(form(), 80, 1, true).
 		AddItem(buildMainViewComponent(), 0, 2, false)

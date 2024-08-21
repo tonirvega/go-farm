@@ -4,7 +4,7 @@ import "github.com/rivo/tview"
 
 // Glboal variables
 var (
-	chickensAmount               = 2
+	hensAmount                   = 2
 	employeesAmount              = 1
 	eggsPerSecond                = 1
 	eggsCountPerWorkingDay       = 0

@@ -32,13 +32,13 @@ func form() *tview.Form {
 			true).
 		AddInputField(
 			messages.NumChickensHeader,
-			strconv.Itoa(chickensAmount),
+			strconv.Itoa(hensAmount),
 			20,
 			nil,
 			// Event handler
 			func(text string) {
 
-				handleIntEvent(&chickensAmount, text)
+				handleIntEvent(&hensAmount, text)
 
 			},
 		).
@@ -165,7 +165,7 @@ func addHeaderCells(table *tview.Table) {
 func updateRow(table *tview.Table) {
 
 	table.SetCell(workingDay, 0, &tview.TableCell{Text: calculateWorkingDayDuration()})
-	table.SetCell(workingDay, 1, &tview.TableCell{Text: fmt.Sprintf("%d", chickensAmount)})
+	table.SetCell(workingDay, 1, &tview.TableCell{Text: fmt.Sprintf("%d", hensAmount)})
 	table.SetCell(workingDay, 2, &tview.TableCell{Text: fmt.Sprintf("%d", eggsPerSecond)})
 	table.SetCell(workingDay, 3, &tview.TableCell{Text: fmt.Sprintf("%d", eggsCountPerWorkingDay)})
 	table.SetCell(workingDay, 4, &tview.TableCell{Text: fmt.Sprintf("%d", employeesAmount)})
