@@ -9,6 +9,11 @@ Este es un proyecto con objetivos didácticos, se estudian los siguientes puntos
 6. Compilación del proyecto y lanzado del mismo con dagger.io
 7. Compilación del proyecto en wasm y lanzamiento en navegador
 
+## requisitos previos
+
+- Go 1.22 + (para desarrollar)
+- dagger 0.12.5 + (para lanzar el proyecto)
+
 ## modo terminal
 
 Ejecutar en la ruta principal de nuestro proyecto: 
