@@ -32,8 +32,6 @@ func finishWorkingDay() {
 		employeeWorkingDayEndChannel <- true
 	}
 
-	close(eggsChannel)
-
 	packagesCountPerWorkingDay = 0
 	eggsCountPerWorkingDay = 0
 	workingDayIsOver = true
